@@ -1,0 +1,3 @@
+#pragma once
+
+enum PACKET_TYPE { PACKET_TYPE_USERNAME, PACKET_TYPE_CHAT_MSG };
