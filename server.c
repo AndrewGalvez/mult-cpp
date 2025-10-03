@@ -69,11 +69,38 @@ int main() {
           printf("packet type chat msg.\n");
           printf("Chat message from client %s: %s\n", (char *)event.peer->data,
                  data);
+          size_t username_len =
+              event.peer->data ? strlen((char *)event.peer->data) : 0;
+          size_t data_len = strlen(data);
+          size_t total_len = 1 + username_len + 1 + data_len + 1;
+          char *echopktstr = malloc(total_len);
+          if (echopktstr == NULL) {
+            fprintf(stderr, "Failed to allocate memory for echo packet\n");
+            return -1;
+          }
+          echopktstr[0] = PACKET_TYPE_CHAT_MSG;
+          if (event.peer->data) {
+            strcpy(echopktstr + 1, (char *)event.peer->data);
+            strcat(echopktstr + 1, ":");
+            strcat(echopktstr + 1, data);
+          } else {
+            strcat(echopktstr + 1, "Unknown:");
+            strcat(echopktstr + 1, data);
+          }
+
+          ENetPacket *echopkt;
+          echopkt = enet_packet_create(echopktstr, strlen(echopktstr) + 1,
+                                       ENET_PACKET_FLAG_RELIABLE);
+
+          enet_host_broadcast(server, 0, echopkt);
+
+          enet_host_flush(server);
+
+          free(echopktstr);
           break;
         }
         }
 
-        /* Clean up the packet now that we're done using it. */
         enet_packet_destroy(event.packet);
         break;
       }
