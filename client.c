@@ -91,16 +91,13 @@ int main() {
 
   ENetHost *client;
 
-  client = enet_host_create(NULL /* create a client host */,
-                            1 /* only allow 1 outgoing connection */,
-                            2 /* allow up 2 channels to be used, 0 and 1 */,
-                            0 /* assume any amount of incoming bandwidth */,
-                            0 /* assume any amount of outgoing bandwidth */);
+  client = enet_host_create(NULL, 1, 2, 0, 0);
   if (client == NULL) {
     fprintf(stderr,
             "An error occurred while trying to create an ENet client host.\n");
     exit(EXIT_FAILURE);
   }
+
   ENetAddress address;
   ENetPeer *peer;
   ENetEvent event;
@@ -210,7 +207,6 @@ int main() {
         DrawText((const char *)msgs[i], 5, 50 + 30 * i, 30, BLACK);
       }
     }
-
     for (int i = 0; i < MAX_USERS + 1; i++) {
       if (usernames[i] != NULL) {
         DrawText(usernames[i], 500, 50 + 50 * i, 48, GREEN);
@@ -220,6 +216,8 @@ int main() {
     DrawRectangleRec(chatbox.rect, BLACK);
     DrawText(chat_msg, chatbox.rect.x + 5,
              chatbox.rect.y + chatbox.rect.height / 2 - 48.0f / 2, 48, WHITE);
+    DrawRectangle(chatbox.rect.x + 5 + MeasureText(chat_msg, 48),
+                  chatbox.rect.y + 2, 5, chatbox.rect.height - 4, WHITE);
 
     EndDrawing();
   }
