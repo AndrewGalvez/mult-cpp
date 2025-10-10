@@ -54,7 +54,6 @@ void update_chat(int *chat_msg_index, char (*chat_msg)[CHAT_MSG_MAX_LEN + 1],
     *chat_msg_index = 0;
   }
 }
-
 char *send_username(ENetPeer *peer, ENetHost *client) {
   char username[20];
   printf("Enter username: ");
@@ -63,6 +62,11 @@ char *send_username(ENetPeer *peer, ENetHost *client) {
 
   while (strlen(username) + 1 >= 20) {
     printf("Username too long.\nEnter username: ");
+    fflush(stdout);
+    scanf("%19s", username);
+  }
+  if (strlen(username) + 1 < 3) {
+    printf("Username too short.\nEnter username: ");
     fflush(stdout);
     scanf("%19s", username);
   }
@@ -209,7 +213,7 @@ int main() {
     }
     for (int i = 0; i < MAX_USERS + 1; i++) {
       if (usernames[i] != NULL) {
-        DrawText(usernames[i], 500, 50 + 50 * i, 48, GREEN);
+        DrawText(usernames[i], 500, 24 * i, 25, GREEN);
       }
     }
 
